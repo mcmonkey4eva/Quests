@@ -211,7 +211,7 @@ public class Quests extends JavaPlugin implements ConversationAbandonedListener 
 		}
 		
 		// 12 - Delay loading of Quests, Events and modules
-		delayLoadQuestInfo();
+		delayLoadQuestInfo(5L);
 	}
 	
 	@Override
@@ -483,7 +483,12 @@ public class Quests extends JavaPlugin implements ConversationAbandonedListener 
         }
     }
 
-	private void delayLoadQuestInfo() {
+    /**
+     * Load quests, actions, and modules after specified delay<p>
+     * 
+     * At startup, this permits Citizens to fully load first
+     */
+	private void delayLoadQuestInfo(long ticks) {
 		getServer().getScheduler().scheduleSyncDelayedTask(this, new Runnable() {
 
 			@Override
@@ -502,7 +507,7 @@ public class Quests extends JavaPlugin implements ConversationAbandonedListener 
 				}
 				loadModules();
 			}
-		}, 5L);
+		}, ticks);
 	}
 
 	/**
@@ -576,7 +581,12 @@ public class Quests extends JavaPlugin implements ConversationAbandonedListener 
 			getLogger().severe("Unable to load module data from quests.yml");
 		}
 	}
-
+	
+	/**
+	 * Load the specified jar as a module
+	 * 
+	 * @param jar A custom reward/requirement/objective jar
+	 */
 	public void loadModule(File jar) {
 		try {
 			@SuppressWarnings("resource")
@@ -1237,6 +1247,12 @@ public class Quests extends JavaPlugin implements ConversationAbandonedListener 
 		}
 	}
 
+	/**
+	 * Display a list of quests to the specified player in chat
+	 * 
+	 * @param player  The player to show the list to
+	 * @param page The iteration of quests to display
+	 */
 	public void listQuests(Player player, int page) {
         int rows = 7;
         if ((quests.size() + rows) < ((page * rows)) || quests.size() == 0) {
@@ -1316,7 +1332,13 @@ public class Quests extends JavaPlugin implements ConversationAbandonedListener 
 		}
 		return quester;
 	}
-
+	
+	/**
+	 * Get online Quester from player name
+	 * 
+	 * @param name Player name
+	 * @return Quester, or null if offline
+	 */
 	public Quester getQuester(String name) {
 		UUID id = null;
 		Quester quester = null;
@@ -1332,6 +1354,11 @@ public class Quests extends JavaPlugin implements ConversationAbandonedListener 
 		return quester;
 	}
 
+	/**
+	 * Get a list of all online Questers
+	 * 
+	 * @return list of online Questers
+	 */
 	public LinkedList<Quester> getOnlineQuesters() {
 		LinkedList<Quester> qs = new LinkedList<Quester>();
 		for (Player p : getServer().getOnlinePlayers()) {

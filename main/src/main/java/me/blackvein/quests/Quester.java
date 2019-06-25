@@ -2870,7 +2870,11 @@ public class Quester {
 		}
 		return completedQuests.isEmpty() == false;
 	}
-
+	
+	/**
+	 * Check whether the specified quest exists
+	 * @param quest The quest to check
+	 */
 	public void checkQuest(Quest quest) {
 		if (quest != null) {
 			boolean exists = false;
@@ -2904,6 +2908,11 @@ public class Quester {
 		}
 	}
 
+	/**
+	 * Show an inventory GUI with quest items to the specified player
+	 * @param npc The NPC from which the GUI is bound
+	 * @param quests List of quests to use for displaying items
+	 */
 	public void showGUIDisplay(NPC npc, LinkedList<Quest> quests) {
 		Player player = getPlayer();
 		int size = ((quests.size() / 9) + 1) * 9;
@@ -2937,6 +2946,13 @@ public class Quester {
 		player.openInventory(inv);
 	}
 
+	/**
+	 * Force Quester to quit the specified quest<p>
+	 * 
+	 * Also cancels any timers
+	 * 
+	 * @param quest The quest to quit
+	 */
 	public void hardQuit(Quest quest) {
 		try {
 			currentQuests.remove(quest);
@@ -2956,6 +2972,10 @@ public class Quester {
 		}
 	}
 
+	/**
+	 * Forcibly remove quest from Quester's list of completed quests
+	 * @param quest The quest to remove
+	 */
 	public void hardRemove(Quest quest) {
 		try {
 			completedQuests.remove(quest.getName());
@@ -2964,6 +2984,11 @@ public class Quester {
 		}
 	}
 
+	/**
+	 * Forcibly clear Quester's list of current quests<p>
+	 * 
+	 * Also resets associated quest data
+	 */
 	public void hardClear() {
 		try {
 			currentQuests.clear();
@@ -2974,6 +2999,11 @@ public class Quester {
 		}
 	}
 
+	/**
+	 * Forcibly set Quester's current stage
+	 * @param key The quest to set stage of
+	 * @param val The stage number to set
+	 */
 	public void hardStagePut(Quest key, Integer val) {
 		try {
 			currentQuests.put(key, val);
@@ -2982,6 +3012,11 @@ public class Quester {
 		}
 	}
 
+	/**
+	 * Forcibly set Quester's quest data
+	 * @param key The quest to set stage of
+	 * @param val The data to set
+	 */
 	public void hardDataPut(Quest key, QuestData val) {
 		try {
 			questData.put(key, val);
@@ -2990,6 +3025,11 @@ public class Quester {
 		}
 	}
 
+	/**
+	 * Reset compass target to Quester's bed spawn location<p>
+	 * 
+	 * Will set to Quester's spawn location if bed spawn does not exist
+	 */
 	public void resetCompass() {
 		if (!plugin.getSettings().canUseCompass())
 			return;
@@ -3003,6 +3043,9 @@ public class Quester {
 		player.setCompassTarget(defaultLocation);
 	}
 
+	/**
+	 * Gets first stage target from current quests, then updates compass accordingly
+	 */
 	public void findCompassTarget() {
 		if (!plugin.getSettings().canUseCompass())
 			return;
@@ -3016,6 +3059,11 @@ public class Quester {
 		}
 	}
 	
+	/**
+	 * Check whether the Quester's inventory contains the specified item
+	 * @param is The item with a specified amount to check
+	 * @return true if the inventory contains at least the amount of the specified stack 
+	 */
 	public boolean hasItem(ItemStack is) {
 		Inventory inv = getPlayer().getInventory();
 		int playerAmount = 0;
@@ -3028,91 +3076,4 @@ public class Quester {
 		}
 		return playerAmount >= is.getAmount();
 	}
-	
-	// I'm not sure why these methods are here. They've been in the class for a long time but aren't used anywhere?
-
-	/*public static String checkPlacement(Inventory inv, int rawSlot) {
-		if (rawSlot < 0) {
-			return Lang.get("questNoDrop");
-		}
-		InventoryType type = inv.getType();
-		if (type.equals(InventoryType.BREWING)) {
-			if (rawSlot < 4) {
-				return Lang.get("questNoBrew");
-			}
-		} else if (type.equals(InventoryType.CHEST)) {
-			if (inv.getContents().length == 27) {
-				if (rawSlot < 27) {
-					return Lang.get("questNoStore");
-				}
-			} else {
-				if (rawSlot < 54) {
-					return Lang.get("questNoStore");
-				}
-			}
-		} else if (type.equals(InventoryType.CRAFTING)) {
-			if (rawSlot < 5) {
-				return Lang.get("questNoCraft");
-			} else if (rawSlot < 9) {
-				return Lang.get("questNoEquip");
-			}
-		} else if (type.equals(InventoryType.DISPENSER)) {
-			if (rawSlot < 9) {
-				return Lang.get("questNoDispense");
-			}
-		} else if (type.equals(InventoryType.ENCHANTING)) {
-			if (rawSlot == 0) {
-				return Lang.get("questNoEnchant");
-			}
-		} else if (type.equals(InventoryType.ENDER_CHEST)) {
-			if (rawSlot < 27) {
-				return Lang.get("questNoStore");
-			}
-		} else if (type.equals(InventoryType.FURNACE)) {
-			if (rawSlot < 3) {
-				return Lang.get("questNoSmelt");
-			}
-		} else if (type.equals(InventoryType.WORKBENCH)) {
-			if (rawSlot < 10) {
-				return Lang.get("questNoCraft");
-			}
-		}
-		return null;
-	}*/
-
-	/*public static List<Integer> getChangedSlots(Inventory inInv, ItemStack inNew) {
-		List<Integer> changed = new ArrayList<Integer>();
-		if (inInv.contains(inNew.getType())) {
-			int amount = inNew.getAmount();
-			HashMap<Integer, ? extends ItemStack> items = inInv.all(inNew.getType());
-			for (int i = 0; i < inInv.getSize(); i++) {
-				if (!items.containsKey((Integer) i)) {
-					continue;
-				}
-				ItemStack item = items.get((Integer) i);
-				int slotamount = item.getMaxStackSize() - item.getAmount();
-				if (slotamount > 1) {
-					if (amount > slotamount) {
-						int toAdd = slotamount - amount;
-						amount = amount - toAdd;
-						changed.add(i);
-					} else {
-						changed.add(i);
-						amount = 0;
-						break;
-					}
-				}
-			}
-			if (amount > 0) {
-				if (inInv.firstEmpty() != -1) {
-					changed.add(inInv.firstEmpty());
-				}
-			}
-		} else {
-			if (inInv.firstEmpty() != -1) {
-				changed.add(inInv.firstEmpty());
-			}
-		}
-		return changed;
-	}*/
 }
