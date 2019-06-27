@@ -3296,7 +3296,7 @@ public class Quests extends JavaPlugin implements ConversationAbandonedListener 
 	}
 
 	/**
-	 * Checks whether items in a list will are instances of a class<p>
+	 * Checks whether items in a list are instances of a class<p>
 	 * 
 	 * Does NOT check whether list objects are null
 	 * 
@@ -3310,8 +3310,6 @@ public class Quests extends JavaPlugin implements ConversationAbandonedListener 
 		}
 		for (Object o : list) {
 			if (clazz.isAssignableFrom(o.getClass()) == false) {
-				Bukkit.getLogger().severe("object= " + o.toString());
-				Bukkit.getLogger().severe("Invalid or null " + clazz.getSimpleName() + " value detected in quests.yml, please correct the file");
 				return false;
 			}
 		}
